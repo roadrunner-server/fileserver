@@ -3,7 +3,7 @@ module github.com/roadrunner-server/fileserver/v2
 go 1.17
 
 require (
-	github.com/gofiber/fiber/v2 v2.24.0
+	github.com/gofiber/fiber/v2 v2.25.0
 	github.com/roadrunner-server/api/v2 v2.0.0-rc.2
 	github.com/roadrunner-server/errors v1.1.0
 	github.com/roadrunner-server/sdk/v2 v2.0.0-rc.1
