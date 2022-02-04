@@ -6,14 +6,14 @@ require (
 	github.com/gofiber/fiber/v2 v2.26.0
 	github.com/roadrunner-server/api/v2 v2.8.0-rc.1
 	github.com/roadrunner-server/errors v1.1.1
-	github.com/roadrunner-server/sdk/v2 v2.8.0-rc.2
+	github.com/roadrunner-server/sdk/v2 v2.8.0-rc.3
 	go.uber.org/zap v1.20.0
 )
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/klauspost/compress v1.14.1 // indirect
-	github.com/roadrunner-server/tcplisten v1.1.0 // indirect
+	github.com/roadrunner-server/tcplisten v1.1.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.32.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
