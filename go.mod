@@ -6,7 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.31.0
 	github.com/roadrunner-server/api/v2 v2.14.0
 	github.com/roadrunner-server/errors v1.1.2
-	github.com/roadrunner-server/sdk/v2 v2.12.0
+	github.com/roadrunner-server/sdk/v2 v2.13.0
 	go.uber.org/zap v1.21.0
 )
 
@@ -19,5 +19,5 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	golang.org/x/sys v0.0.0-20220405210540-1e041c57c461 // indirect
+	golang.org/x/sys v0.0.0-20220406163625-3f8b81556e12 // indirect
 )
