@@ -4,9 +4,9 @@ go 1.18
 
 require (
 	github.com/gofiber/fiber/v2 v2.35.0
-	github.com/roadrunner-server/api/v2 v2.18.0
+	github.com/roadrunner-server/api/v2 v2.19.0
 	github.com/roadrunner-server/errors v1.1.2
-	github.com/roadrunner-server/sdk/v2 v2.17.3
+	github.com/roadrunner-server/sdk/v2 v2.18.0
 	go.uber.org/zap v1.21.0
 )
 
