@@ -53,11 +53,12 @@ func (p *Plugin) Serve() chan error {
 
 	p.Lock()
 	p.app = fiber.New(fiber.Config{
+		ReadBufferSize:               1 * 1024 * 1024,
+		WriteBufferSize:              1 * 1024 * 1024,
 		Prefork:                      false,
-		BodyLimit:                    0,
-		ReadTimeout:                  time.Second * 5,
-		WriteTimeout:                 0,
-		IdleTimeout:                  0,
+		BodyLimit:                    10 * 1024 * 1024,
+		ReadTimeout:                  time.Second * 10,
+		WriteTimeout:                 time.Second * 10,
 		DisableKeepalive:             false,
 		DisableDefaultDate:           false,
 		DisableDefaultContentType:    false,
