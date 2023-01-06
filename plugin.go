@@ -1,6 +1,7 @@
 package fileserver
 
 import (
+	"context"
 	"sync"
 	"time"
 
@@ -11,15 +12,17 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	pluginName string = "fileserver"
-)
+const pluginName string = "fileserver"
 
 type Configurer interface {
 	// UnmarshalKey takes a single key and unmarshal it into a Struct.
 	UnmarshalKey(name string, out any) error
 	// Has checks if config section exists.
 	Has(name string) bool
+}
+
+type Logger interface {
+	NamedLogger(name string) *zap.Logger
 }
 
 type Plugin struct {
@@ -30,7 +33,7 @@ type Plugin struct {
 	app *fiber.App
 }
 
-func (p *Plugin) Init(cfg Configurer, log *zap.Logger) error {
+func (p *Plugin) Init(cfg Configurer, log Logger) error {
 	const op = errors.Op("file_server_init")
 
 	if !cfg.Has(pluginName) {
@@ -42,8 +45,7 @@ func (p *Plugin) Init(cfg Configurer, log *zap.Logger) error {
 		return errors.E(op, err)
 	}
 
-	p.log = new(zap.Logger)
-	*p.log = *log
+	p.log = log.NamedLogger(pluginName)
 
 	return nil
 }
@@ -104,15 +106,31 @@ func (p *Plugin) Serve() chan error {
 	return errCh
 }
 
-func (p *Plugin) Stop() error {
-	p.Lock()
-	defer p.Unlock()
+func (p *Plugin) Stop(ctx context.Context) error {
+	endCh := make(chan struct{}, 1)
+	errCh := make(chan error, 1)
 
-	err := p.app.Shutdown()
-	if err != nil {
-		return err
+	go func() {
+		p.Lock()
+		defer p.Unlock()
+
+		err := p.app.Shutdown()
+		if err != nil {
+			errCh <- err
+			return
+		}
+
+		endCh <- struct{}{}
+	}()
+
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case e := <-errCh:
+		return e
+	case <-endCh:
+		return nil
 	}
-	return nil
 }
 
 func (p *Plugin) Name() string {
