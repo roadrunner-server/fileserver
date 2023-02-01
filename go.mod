@@ -1,6 +1,6 @@
 module github.com/roadrunner-server/fileserver/v4
 
-go 1.19
+go 1.20
 
 require (
 	github.com/gofiber/fiber/v2 v2.41.0
