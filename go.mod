@@ -3,7 +3,7 @@ module github.com/roadrunner-server/fileserver/v4
 go 1.20
 
 require (
-	github.com/gofiber/fiber/v2 v2.44.0
+	github.com/gofiber/fiber/v2 v2.45.0
 	github.com/roadrunner-server/errors v1.2.0
 	github.com/roadrunner-server/sdk/v4 v4.2.2
 	go.uber.org/zap v1.24.0
