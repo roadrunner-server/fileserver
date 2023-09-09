@@ -7,7 +7,7 @@ toolchain go1.21.0
 require (
 	github.com/gofiber/fiber/v2 v2.49.1
 	github.com/roadrunner-server/errors v1.3.0
-	github.com/roadrunner-server/sdk/v4 v4.3.2
+	github.com/roadrunner-server/sdk/v4 v4.4.0
 	go.uber.org/zap v1.25.0
 )
 

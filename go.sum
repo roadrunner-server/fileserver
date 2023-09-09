@@ -4,8 +4,6 @@ github.com/benbjohnson/clock v1.3.0 h1:ip6w0uFQkncKQ979AypyG0ER7mqUSBdKLOgAle/AT
 github.com/benbjohnson/clock v1.3.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/gofiber/fiber/v2 v2.49.0 h1:xBVG2c66GDcWfww56xHvMn52Q0XX7UrSvjj6MD8/5EE=
-github.com/gofiber/fiber/v2 v2.49.0/go.mod h1:oxpt7wQaEYgdDmq7nMxCGhilYicBLFnZ+jQSJcQDlSE=
 github.com/gofiber/fiber/v2 v2.49.1 h1:0W2DRWevSirc8pJl4o8r8QejDR8TV6ZUCawHxwbIdOk=
 github.com/gofiber/fiber/v2 v2.49.1/go.mod h1:nPUeEBUeeYGgwbDm59Gp7vS8MDyScL6ezr/Np9A13WU=
 github.com/google/uuid v1.3.1 h1:KjJaJ9iWZ3jOFZIf1Lqf4laDRCasjl0BCmnEGxkdLb4=
@@ -28,6 +26,8 @@ github.com/roadrunner-server/errors v1.3.0 h1:kLVXpXne0jMReN7pj8KIhyYyjqKjsPC5DR
 github.com/roadrunner-server/errors v1.3.0/go.mod h1:XYVuhXvxi3yQaP/zCLB6QRZ0JvQIRaBa0SKFHL4WLKg=
 github.com/roadrunner-server/sdk/v4 v4.3.2 h1:/7ADKRiFQNXDWmkiSKVLs7ngvmitwOGFWiqxOWAfFpM=
 github.com/roadrunner-server/sdk/v4 v4.3.2/go.mod h1:UkiAk5IdmUzkXncfy671OoH6i/zWpWc+JY3IU/AnQuc=
+github.com/roadrunner-server/sdk/v4 v4.4.0 h1:WPrx5+5k43SGAsS/9EKYReU17jnONY9eRmW1pQbu/+w=
+github.com/roadrunner-server/sdk/v4 v4.4.0/go.mod h1:9TPfWYRm4jtlA//QAUBWAKC2c7Mt33FRAA2c9Be9yc8=
 github.com/roadrunner-server/tcplisten v1.4.0 h1:yWo09zktv/CSV6VywLfw4pwNcUchgTiIrW4uIICtO5M=
 github.com/roadrunner-server/tcplisten v1.4.0/go.mod h1:A6+VSnW2ETGnN/e/CMdP63ZXqQDaC0UDMU6QmyuB0yM=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
@@ -46,8 +46,6 @@ go.uber.org/zap v1.25.0 h1:4Hvk6GtkucQ790dqmj7l1eEnRdKm3k3ZUrUMS2d5+5c=
 go.uber.org/zap v1.25.0/go.mod h1:JIAUzQIH94IC4fOJQm7gMmBJP5k7wQfdcnYdPoEXJYk=
 golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.6.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
-golang.org/x/sys v0.11.0 h1:eG7RXZHdqOJ1i+0lgLgCpSXAp6M3LYlAo6osgSi0xOM=
-golang.org/x/sys v0.11.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.12.0 h1:CM0HF96J0hcLAwsHPJZjfdNzs0gftsLfgKt57wWHJ0o=
 golang.org/x/sys v0.12.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
