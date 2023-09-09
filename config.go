@@ -7,16 +7,12 @@ import (
 type Config struct {
 	// Address to serve
 	Address string `mapstructure:"address"`
-
 	// CalculateEtag can be true/false and used to calculate etag for the static
 	CalculateEtag bool `mapstructure:"calculate_etag"`
-
 	// Weak etag `W/`
 	Weak bool `mapstructure:"weak"`
-
 	// per-root configuration
 	Configuration []*Cfg `mapstructure:"serve"`
-
 	// StreamRequestBody ...
 	StreamRequestBody bool `mapstructure:"stream_request_body"`
 }
