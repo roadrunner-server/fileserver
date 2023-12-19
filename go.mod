@@ -2,7 +2,7 @@ module github.com/roadrunner-server/fileserver/v4
 
 go 1.21
 
-toolchain go1.21.0
+toolchain go1.21.5
 
 require (
 	github.com/gofiber/fiber/v2 v2.51.0
