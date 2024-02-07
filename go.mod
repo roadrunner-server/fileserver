@@ -1,8 +1,8 @@
 module github.com/roadrunner-server/fileserver/v4
 
-go 1.21
+go 1.22
 
-toolchain go1.21.5
+toolchain go1.22.0
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.0
@@ -24,5 +24,5 @@ require (
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/sys v0.17.0 // indirect
 )
