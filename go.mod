@@ -5,7 +5,7 @@ go 1.22.2
 require (
 	github.com/gofiber/fiber/v2 v2.52.4
 	github.com/roadrunner-server/errors v1.4.0
-	github.com/roadrunner-server/sdk/v4 v4.7.0
+	github.com/roadrunner-server/sdk/v4 v4.7.1
 	go.uber.org/zap v1.27.0
 )
 
