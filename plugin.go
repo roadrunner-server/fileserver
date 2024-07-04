@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/roadrunner-server/errors"
-	"github.com/roadrunner-server/sdk/v4/utils"
+	"github.com/roadrunner-server/tcplisten"
 	"go.uber.org/zap"
 )
 
@@ -17,7 +17,7 @@ const pluginName string = "fileserver"
 type Configurer interface {
 	// UnmarshalKey takes a single key and unmarshal it into a Struct.
 	UnmarshalKey(name string, out any) error
-	// Has checks if config section exists.
+	// Has checks if a config section exists.
 	Has(name string) bool
 }
 
@@ -87,7 +87,7 @@ func (p *Plugin) Serve() chan error {
 		})
 	}
 
-	ln, err := utils.CreateListener(p.config.Address)
+	ln, err := tcplisten.CreateListener(p.config.Address)
 	if err != nil {
 		errCh <- err
 		return errCh
