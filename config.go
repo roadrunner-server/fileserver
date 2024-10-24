@@ -2,6 +2,8 @@ package fileserver
 
 import (
 	"github.com/roadrunner-server/errors"
+
+	"strings"
 )
 
 type Config struct {
@@ -44,6 +46,10 @@ func (c *Config) Valid() error {
 	for i := 0; i < len(c.Configuration); i++ {
 		if c.Configuration[i].Prefix == "" {
 			return errors.E(op, errors.Str("empty prefix"))
+		}
+
+		if !strings.HasPrefix(c.Configuration[i].Prefix, "/") {
+			return errors.E(op, errors.Str("prefix must begin with a forward slash"))
 		}
 
 		if c.Configuration[i].Root == "" {
