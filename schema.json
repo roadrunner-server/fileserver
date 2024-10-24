@@ -13,6 +13,7 @@
     "address": {
       "description": "The address to listen on.",
       "type": "string",
+      "minLength": 1,
       "examples": [
         "127.0.0.1:10101"
       ]
