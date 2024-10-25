@@ -46,6 +46,10 @@ func (c *Config) Valid() error {
 			return errors.E(op, errors.Str("empty prefix"))
 		}
 
+		if c.Configuration[i].Prefix[0] != '/' {
+			return errors.E(op, errors.Str("prefix must begin with a forward slash"))
+		}
+
 		if c.Configuration[i].Root == "" {
 			c.Configuration[i].Root = "."
 		}

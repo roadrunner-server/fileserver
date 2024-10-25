@@ -1,0 +1,88 @@
+{
+  "$id": "https://raw.githubusercontent.com/roadrunner-server/fileserver/refs/heads/master/schema.json",
+  "$schema": "https://json-schema.org/draft/2019-09/schema",
+  "description": "All the valid configuration parameters for the FileServer plugin for RoadRunner.",
+  "type": "object",
+  "additionalProperties": false,
+  "title": "roadrunner-fileserver",
+  "required": [
+    "address",
+    "serve"
+  ],
+  "properties": {
+    "address": {
+      "description": "The address to listen on.",
+      "type": "string",
+      "minLength": 1,
+      "examples": [
+        "127.0.0.1:10101"
+      ]
+    },
+    "calculate_etag": {
+      "description": "Whether to calculate ETag for the file and add the ETag header. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag",
+      "type": "boolean",
+      "default": false
+    },
+    "weak": {
+      "description": "Whether to use only the filename when calculating the ETag value. If `false`, the entire file content is used.",
+      "default": false
+    },
+    "stream_request_body": {
+      "type": "boolean",
+      "description": "Whether to stream files larger than 4KB.",
+      "default": false
+    },
+    "serve": {
+      "description": "The URL prefixes to serve as static files. At least one entry is required.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "prefix": {
+            "description": "Files matching this prefix will be served with this configuration. Prefixes must begin with a forward slash.",
+            "type": "string",
+            "minLength": 1,
+            "examples": [
+              "/img",
+              "/assets"
+            ]
+          },
+          "root": {
+            "description": "Directory to serve these files from. This can be an absolute path or a path relative to the RR application directory. Defaults to the root of the RR application directory.",
+            "default": ".",
+            "type": "string",
+            "examples": [
+              "./public",
+              "/var/www/html/public"
+            ]
+          },
+          "compress": {
+            "description": "When set to true, the server attempts to minimize CPU usage by caching compressed files.",
+            "type": "boolean",
+            "default": false
+          },
+          "cache_duration": {
+            "description": "Expiration duration for inactive file handlers, given in seconds. Use any negative number (e.g. `-1`) to disable.",
+            "type": "integer",
+            "default": 10
+          },
+          "max_age": {
+            "description": "The value for the Cache-Control HTTP-header, given in seconds. The header is not sent if this value is zero or undefined.",
+            "type": "integer",
+            "default": 0
+          },
+          "bytes_range": {
+            "description": "Enable range requests. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests",
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "prefix"
+        ]
+      }
+    }
+  }
+}
