@@ -5,7 +5,7 @@ go 1.23
 toolchain go1.23.4
 
 require (
-	github.com/gofiber/fiber/v2 v2.52.5
+	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/roadrunner-server/errors v1.4.1
 	github.com/roadrunner-server/tcplisten v1.5.1
 	go.uber.org/zap v1.27.0
