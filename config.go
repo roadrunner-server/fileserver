@@ -41,7 +41,7 @@ func (c *Config) Valid() error {
 		return errors.E(op, errors.Str("no configuration to serve"))
 	}
 
-	for i := 0; i < len(c.Configuration); i++ {
+	for i := range c.Configuration {
 		if c.Configuration[i].Prefix == "" {
 			return errors.E(op, errors.Str("empty prefix"))
 		}

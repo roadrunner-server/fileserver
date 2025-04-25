@@ -77,7 +77,7 @@ func (p *Plugin) Serve() chan error {
 		}))
 	}
 
-	for i := 0; i < len(p.config.Configuration); i++ {
+	for i := range p.config.Configuration {
 		p.app.Static(p.config.Configuration[i].Prefix, p.config.Configuration[i].Root, fiber.Static{
 			Compress:      p.config.Configuration[i].Compress,
 			ByteRange:     p.config.Configuration[i].BytesRange,
