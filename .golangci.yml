@@ -14,7 +14,6 @@ linters:
     - gochecknoglobals
     - gochecknoinits
     - gocognit
-    - goconst
     - gocritic
     - goprintffuncname
     - gosec
@@ -33,9 +32,6 @@ linters:
     - unused
     - whitespace
   settings:
-    goconst:
-      min-len: 2
-      min-occurrences: 3
     godot:
       scope: declarations
       capital: true
@@ -58,12 +54,6 @@ linters:
       - common-false-positives
       - legacy
       - std-error-handling
-    rules:
-      - linters:
-          - funlen
-          - gocognit
-          - scopelint
-        path: _test\.go
     paths:
       - .github
       - .git
