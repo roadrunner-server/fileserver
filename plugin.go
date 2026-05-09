@@ -2,6 +2,7 @@ package fileserver
 
 import (
 	"context"
+	"log/slog"
 	"sync"
 	"time"
 
@@ -9,7 +10,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/etag"
 	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/tcplisten"
-	"go.uber.org/zap"
 )
 
 const pluginName string = "fileserver"
@@ -22,14 +22,14 @@ type Configurer interface {
 }
 
 type Logger interface {
-	NamedLogger(name string) *zap.Logger
+	NamedLogger(name string) *slog.Logger
 }
 
 type Plugin struct {
 	sync.Mutex
 	config *Config
 
-	log *zap.Logger
+	log *slog.Logger
 	app *fiber.App
 }
 
@@ -95,7 +95,7 @@ func (p *Plugin) Serve() chan error {
 
 	go func() {
 		p.Unlock()
-		p.log.Info("file server started", zap.String("address", p.config.Address))
+		p.log.Info("file server started", "address", p.config.Address)
 		err = p.app.Listener(ln)
 		if err != nil {
 			errCh <- err
