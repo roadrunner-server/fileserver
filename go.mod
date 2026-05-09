@@ -8,7 +8,6 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.13
 	github.com/roadrunner-server/errors v1.5.0
 	github.com/roadrunner-server/tcplisten v1.5.2
-	go.uber.org/zap v1.28.0
 )
 
 require (
@@ -19,9 +18,7 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/mattn/go-runewidth v0.0.23 // indirect
-	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.71.0 // indirect
-	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/sys v0.44.0 // indirect
 )
