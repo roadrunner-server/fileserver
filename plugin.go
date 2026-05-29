@@ -45,6 +45,10 @@ func (p *Plugin) Init(cfg Configurer, log Logger) error {
 		return errors.E(op, err)
 	}
 
+	if err = p.config.Valid(); err != nil {
+		return errors.E(op, err)
+	}
+
 	p.log = log.NamedLogger(pluginName)
 
 	return nil
@@ -55,20 +59,13 @@ func (p *Plugin) Serve() chan error {
 
 	p.Lock()
 	p.app = fiber.New(fiber.Config{
-		ReadBufferSize:               1 * 1024 * 1024,
-		WriteBufferSize:              1 * 1024 * 1024,
-		Prefork:                      false,
-		BodyLimit:                    10 * 1024 * 1024,
-		ReadTimeout:                  time.Second * 10,
-		WriteTimeout:                 time.Second * 10,
-		DisableKeepalive:             false,
-		DisableDefaultDate:           false,
-		DisableDefaultContentType:    false,
-		DisableHeaderNormalizing:     false,
-		DisableStartupMessage:        true,
-		StreamRequestBody:            p.config.StreamRequestBody,
-		DisablePreParseMultipartForm: false,
-		ReduceMemoryUsage:            false,
+		ReadBufferSize:        1 * 1024 * 1024,
+		WriteBufferSize:       1 * 1024 * 1024,
+		BodyLimit:             10 * 1024 * 1024,
+		ReadTimeout:           time.Second * 10,
+		WriteTimeout:          time.Second * 10,
+		DisableStartupMessage: true,
+		StreamRequestBody:     p.config.StreamRequestBody,
 	})
 
 	if p.config.CalculateEtag {
@@ -77,18 +74,19 @@ func (p *Plugin) Serve() chan error {
 		}))
 	}
 
-	for i := range p.config.Configuration {
-		p.app.Static(p.config.Configuration[i].Prefix, p.config.Configuration[i].Root, fiber.Static{
-			Compress:      p.config.Configuration[i].Compress,
-			ByteRange:     p.config.Configuration[i].BytesRange,
+	for _, cfg := range p.config.Configuration {
+		p.app.Static(cfg.Prefix, cfg.Root, fiber.Static{
+			Compress:      cfg.Compress,
+			ByteRange:     cfg.BytesRange,
 			Browse:        false,
-			CacheDuration: time.Second * time.Duration(p.config.Configuration[i].CacheDuration),
-			MaxAge:        p.config.Configuration[i].MaxAge,
+			CacheDuration: time.Second * time.Duration(cfg.CacheDuration),
+			MaxAge:        cfg.MaxAge,
 		})
 	}
 
 	ln, err := tcplisten.CreateListener(p.config.Address)
 	if err != nil {
+		p.Unlock()
 		errCh <- err
 		return errCh
 	}
@@ -96,10 +94,8 @@ func (p *Plugin) Serve() chan error {
 	go func() {
 		p.Unlock()
 		p.log.Info("file server started", "address", p.config.Address)
-		err = p.app.Listener(ln)
-		if err != nil {
+		if err := p.app.Listener(ln); err != nil {
 			errCh <- err
-			return
 		}
 	}()
 
@@ -107,29 +103,19 @@ func (p *Plugin) Serve() chan error {
 }
 
 func (p *Plugin) Stop(ctx context.Context) error {
-	endCh := make(chan struct{}, 1)
-	errCh := make(chan error, 1)
+	doneCh := make(chan error, 1)
 
 	go func() {
 		p.Lock()
 		defer p.Unlock()
-
-		err := p.app.Shutdown()
-		if err != nil {
-			errCh <- err
-			return
-		}
-
-		endCh <- struct{}{}
+		doneCh <- p.app.ShutdownWithContext(ctx)
 	}()
 
 	select {
 	case <-ctx.Done():
 		return ctx.Err()
-	case e := <-errCh:
-		return e
-	case <-endCh:
-		return nil
+	case err := <-doneCh:
+		return err
 	}
 }
 
