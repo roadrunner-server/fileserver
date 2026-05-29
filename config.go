@@ -37,7 +37,7 @@ func (c *Config) Valid() error {
 		return errors.E(op, errors.Str("empty address"))
 	}
 
-	if c.Configuration == nil {
+	if len(c.Configuration) == 0 {
 		return errors.E(op, errors.Str("no configuration to serve"))
 	}
 
