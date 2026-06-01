@@ -37,25 +37,25 @@ func (c *Config) Valid() error {
 		return errors.E(op, errors.Str("empty address"))
 	}
 
-	if c.Configuration == nil {
+	if len(c.Configuration) == 0 {
 		return errors.E(op, errors.Str("no configuration to serve"))
 	}
 
-	for i := range c.Configuration {
-		if c.Configuration[i].Prefix == "" {
+	for _, cfg := range c.Configuration {
+		if cfg.Prefix == "" {
 			return errors.E(op, errors.Str("empty prefix"))
 		}
 
-		if c.Configuration[i].Prefix[0] != '/' {
+		if cfg.Prefix[0] != '/' {
 			return errors.E(op, errors.Str("prefix must begin with a forward slash"))
 		}
 
-		if c.Configuration[i].Root == "" {
-			c.Configuration[i].Root = "."
+		if cfg.Root == "" {
+			cfg.Root = "."
 		}
 
-		if c.Configuration[i].CacheDuration == 0 {
-			c.Configuration[i].CacheDuration = 10
+		if cfg.CacheDuration == 0 {
+			cfg.CacheDuration = 10
 		}
 	}
 
