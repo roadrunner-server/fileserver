@@ -5,7 +5,7 @@ go 1.26
 toolchain go1.26.4
 
 require (
-	github.com/gofiber/fiber/v2 v2.52.13
+	github.com/gofiber/fiber/v2 v2.52.14
 	github.com/roadrunner-server/errors v1.5.0
 	github.com/roadrunner-server/tcplisten v1.5.2
 )
