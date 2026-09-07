@@ -1,12 +1,16 @@
 package fileserver
 
 import (
+	"fmt"
+
 	"github.com/roadrunner-server/errors"
+	"github.com/roadrunner-server/tcplisten"
 )
 
 type Config struct {
 	// Address to serve
-	Address string `mapstructure:"address"`
+	Address    string                       `mapstructure:"address"`
+	UnixSocket *tcplisten.UnixSocketOptions `mapstructure:"unix_socket"`
 	// CalculateEtag can be true/false and used to calculate etag for the static
 	CalculateEtag bool `mapstructure:"calculate_etag"`
 	// Weak etag `W/`
@@ -35,6 +39,10 @@ func (c *Config) Valid() error {
 	const op = errors.Op("static_validation")
 	if c.Address == "" {
 		return errors.E(op, errors.Str("empty address"))
+	}
+
+	if err := c.UnixSocket.Validate(c.Address); err != nil {
+		return errors.E(op, fmt.Errorf("fileserver.unix_socket: %w", err))
 	}
 
 	if len(c.Configuration) == 0 {

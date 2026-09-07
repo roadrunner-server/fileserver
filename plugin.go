@@ -84,7 +84,7 @@ func (p *Plugin) Serve() chan error {
 		})
 	}
 
-	ln, err := tcplisten.CreateListener(p.config.Address)
+	ln, err := tcplisten.CreateListenerWithOptions(p.config.Address, p.config.UnixSocket)
 	if err != nil {
 		p.Unlock()
 		errCh <- err

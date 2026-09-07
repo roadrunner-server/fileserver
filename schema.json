@@ -18,6 +18,9 @@
         "127.0.0.1:10101"
       ]
     },
+    "unix_socket": {
+      "$ref": "https://raw.githubusercontent.com/roadrunner-server/tcplisten/v1.6.0/schema.json"
+    },
     "calculate_etag": {
       "description": "Whether to calculate ETag for the file and add the ETag header. See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag",
       "type": "boolean",
