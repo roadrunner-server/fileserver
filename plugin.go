@@ -40,19 +40,9 @@ func (p *Plugin) Init(cfg Configurer, log Logger) error {
 		return errors.E(op, errors.Disabled)
 	}
 
-	if cfg.Has("fileserver.unix_socket") {
-		if err := validateUnixSocketIDs(cfg, "fileserver.unix_socket"); err != nil {
-			return errors.E(op, err)
-		}
-	}
-
 	err := cfg.UnmarshalKey(pluginName, &p.config)
 	if err != nil {
 		return errors.E(op, err)
-	}
-
-	if p.config.UnixSocket == nil && cfg.Has("fileserver.unix_socket") {
-		p.config.UnixSocket = &tcplisten.UnixSocketOptions{}
 	}
 
 	if err = p.config.Valid(); err != nil {

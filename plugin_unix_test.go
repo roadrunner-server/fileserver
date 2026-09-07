@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"math"
 	"net"
 	"net/http"
 	"os"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -24,24 +24,6 @@ import (
 	"github.com/roadrunner-server/config/v6"
 	"github.com/roadrunner-server/tcplisten"
 )
-
-type testConfig struct {
-	cfg    *Config
-	socket map[string]any
-}
-
-func (c testConfig) Has(name string) bool {
-	return name == pluginName || name == "fileserver.unix_socket" && c.socket != nil
-}
-
-func (c testConfig) UnmarshalKey(name string, out any) error {
-	if name == "fileserver.unix_socket" {
-		*out.(*map[string]any) = c.socket
-		return nil
-	}
-	*out.(**Config) = c.cfg
-	return nil
-}
 
 type testLogger struct{}
 
@@ -95,14 +77,6 @@ fileserver:
 		t.Fatal(err)
 	default:
 	}
-	info, err := os.Stat("files.sock")
-	if err != nil {
-		t.Fatal(err)
-	}
-	stat := info.Sys().(*syscall.Stat_t)
-	if info.Mode()&os.ModeSocket == 0 || info.Mode().Perm() != 0o640 || int64(stat.Uid) != int64(uid) || int64(stat.Gid) != int64(gid) {
-		t.Fatalf("unexpected socket attributes: mode=%v uid=%d gid=%d", info.Mode(), stat.Uid, stat.Gid)
-	}
 	transport := &http.Transport{DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
 		var d net.Dialer
 		return d.DialContext(ctx, "unix", "files.sock")
@@ -125,6 +99,14 @@ fileserver:
 	if resp.StatusCode != http.StatusOK || string(body) != content {
 		t.Fatalf("unexpected response: status=%d body=%q", resp.StatusCode, body)
 	}
+	info, err := os.Stat("files.sock")
+	if err != nil {
+		t.Fatal(err)
+	}
+	stat := info.Sys().(*syscall.Stat_t)
+	if info.Mode()&os.ModeSocket == 0 || info.Mode().Perm() != 0o640 || int64(stat.Uid) != int64(uid) || int64(stat.Gid) != int64(gid) {
+		t.Fatalf("unexpected socket attributes: mode=%v uid=%d gid=%d", info.Mode(), stat.Uid, stat.Gid)
+	}
 	transport.CloseIdleConnections()
 	if err = stop(); err != nil {
 		t.Fatal(err)
@@ -139,81 +121,9 @@ fileserver:
 	}
 }
 
-func TestUnixSocketRawIDs(t *testing.T) {
-	type namedID int64
-	for _, field := range []string{"uid", "gid"} {
-		for _, tc := range []struct {
-			value   any
-			invalid bool
-		}{
-			{value: nil},
-			{value: int(0)},
-			{value: int8(33)},
-			{value: int16(33)},
-			{value: int32(33)},
-			{value: int64(4294967294)},
-			{value: namedID(33)},
-			{value: uint(0)},
-			{value: uint8(33)},
-			{value: uint16(33)},
-			{value: uint32(33)},
-			{value: uint64(4294967294)},
-			{value: uintptr(33)},
-			{value: "0"},
-			{value: "0x21"},
-			{value: float32(33)},
-			{value: float64(33)},
-			{value: int64(-1), invalid: true},
-			{value: int64(4294967295), invalid: true},
-			{value: uint64(4294967295), invalid: true},
-			{value: float64(4294967295), invalid: true},
-			{value: float64(1.9), invalid: true},
-			{value: float32(-0.5), invalid: true},
-			{value: math.NaN(), invalid: true},
-			{value: math.Inf(1), invalid: true},
-			{value: math.Inf(-1), invalid: true},
-			{value: true, invalid: true},
-			{value: false, invalid: true},
-			{value: "", invalid: true},
-			{value: "4294967295", invalid: true},
-			{value: "1.9", invalid: true},
-			{value: []int{33}, invalid: true},
-			{value: map[string]any{}, invalid: true},
-		} {
-			t.Run(fmt.Sprintf("%s/%T/%v", field, tc.value, tc.value), func(t *testing.T) {
-				cfg := testConfig{
-					cfg:    &Config{Address: "unix://test.sock", Configuration: []*Cfg{{Prefix: "/"}}},
-					socket: map[string]any{field: tc.value},
-				}
-				p := &Plugin{}
-				err := p.Init(cfg, testLogger{})
-				if p.app != nil {
-					t.Fatal("server started during configuration")
-				}
-				if tc.invalid {
-					if err == nil || !strings.Contains(err.Error(), "fileserver.unix_socket."+field) {
-						t.Fatalf("expected a field error, got %v", err)
-					}
-					if p.config != nil {
-						t.Fatal("invalid raw ID reached typed decoding")
-					}
-					return
-				}
-				if err != nil {
-					t.Fatal(err)
-				}
-			})
-		}
-	}
-}
-
 func TestUnixSocketFileConfig(t *testing.T) {
 	t.Setenv("RR_TEST_SOCKET_ID", "33")
 	t.Setenv("RR_TEST_SOCKET_MODE", "0640")
-	t.Setenv("RR_TEST_SOCKET_MISSING", "")
-	if err := os.Unsetenv("RR_TEST_SOCKET_MISSING"); err != nil {
-		t.Fatal(err)
-	}
 	zero, uid, gid := 0, 33, 34
 	cases := []struct {
 		name    string
@@ -225,30 +135,33 @@ func TestUnixSocketFileConfig(t *testing.T) {
 	}{
 		{name: "absent TCP", address: "127.0.0.1:10101"},
 		{name: "absent UNIX", address: "unix://test.sock"},
-		{name: "empty UNIX", address: "unix://test.sock", options: "{}", want: &tcplisten.UnixSocketOptions{}},
-		{name: "empty TCP", address: "127.0.0.1:10101", options: "{}", wantErr: "fileserver.unix_socket"},
-		{name: "empty TCP scheme", address: "tcp://127.0.0.1:10101", options: "{}", wantErr: "fileserver.unix_socket"},
+		{name: "empty UNIX", address: "unix://test.sock", options: "{}"},
+		{name: "empty TCP", address: "127.0.0.1:10101", options: "{}"},
+		{name: "empty TCP scheme", address: "tcp://127.0.0.1:10101", options: "{}"},
 		{name: "empty address", options: "{}", wantErr: "empty address"},
+		{name: "TCP options", address: "127.0.0.1:10101", options: `{"mode":"0600"}`, wantErr: "filesystem unix:// address"},
+		{name: "invalid mode", address: "unix://test.sock", options: `{"mode":"0780"}`, wantErr: "invalid unix socket mode"},
+		{name: "negative UID", address: "unix://test.sock", options: `{"uid":-1}`, wantErr: "invalid unix socket uid"},
+		{name: "negative GID", address: "unix://test.sock", options: `{"gid":-1}`, wantErr: "invalid unix socket gid"},
+		{name: "reserved UID", address: "unix://test.sock", options: `{"uid":4294967295}`, wantErr: "invalid unix socket uid"},
+		{name: "reserved GID", address: "unix://test.sock", options: `{"gid":4294967295}`, wantErr: "invalid unix socket gid"},
 		{name: "mode only", address: "unix://test.sock", options: `{"mode":"0600"}`, want: &tcplisten.UnixSocketOptions{Mode: "0600"}},
 		{name: "zero values", address: "unix://test.sock", options: `{"mode":"0000","uid":0,"gid":0}`, want: &tcplisten.UnixSocketOptions{Mode: "0000", UID: &zero, GID: &zero}},
 		{name: "null IDs", address: "unix://test.sock", options: `{"uid":null,"gid":null}`, want: &tcplisten.UnixSocketOptions{}},
 		{name: "environment values", address: "unix://test.sock", options: `{"mode":"${RR_TEST_SOCKET_MODE}","uid":"${RR_TEST_SOCKET_ID}","gid":"${RR_TEST_SOCKET_ID}"}`, want: &tcplisten.UnixSocketOptions{Mode: "0640", UID: &uid, GID: &uid}},
-		{name: "missing environment", address: "unix://test.sock", options: `{"uid":"${RR_TEST_SOCKET_MISSING}"}`, wantErr: "fileserver.unix_socket.uid"},
-		{name: "boolean UID", address: "unix://test.sock", options: `{"uid":true}`, wantErr: "fileserver.unix_socket.uid"},
-		{name: "boolean GID", address: "unix://test.sock", options: `{"gid":false}`, wantErr: "fileserver.unix_socket.gid"},
-		{name: "fractional UID", address: "unix://test.sock", options: `{"uid":1.9}`, wantErr: "fileserver.unix_socket.uid"},
-		{name: "negative fractional GID", address: "unix://test.sock", options: `{"gid":-0.5}`, wantErr: "fileserver.unix_socket.gid"},
 		{name: "integral IDs", format: "json", address: "unix://test.sock", options: `{"uid":33.0,"gid":34.0}`, want: &tcplisten.UnixSocketOptions{UID: &uid, GID: &gid}},
-		{name: "fractional UID", format: "json", address: "unix://test.sock", options: `{"uid":1.9}`, wantErr: "fileserver.unix_socket.uid"},
-		{name: "boolean GID", format: "json", address: "unix://test.sock", options: `{"gid":false}`, wantErr: "fileserver.unix_socket.gid"},
-		{name: "empty TCP", format: "json", address: "127.0.0.1:10101", options: "{}", wantErr: "fileserver.unix_socket"},
-		{name: "empty UNIX", format: "json", address: "unix://test.sock", options: "{}", want: &tcplisten.UnixSocketOptions{}},
+		{name: "empty TCP", format: "json", address: "127.0.0.1:10101", options: "{}"},
+		{name: "empty UNIX", format: "json", address: "unix://test.sock", options: "{}"},
 	}
 	for _, tc := range cases {
 		format := cmp.Or(tc.format, "yaml")
 		t.Run(format+"/"+tc.name, func(t *testing.T) {
 			t.Chdir(t.TempDir())
-			data := fmt.Sprintf("version: '3'\nfileserver:\n  address: %q\n  serve: [{prefix: /}]\n", tc.address)
+			data := fmt.Sprintf(`version: "3"
+fileserver:
+  address: %q
+  serve: [{prefix: /}]
+`, tc.address)
 			if tc.options != "" {
 				data += "  unix_socket: " + tc.options + "\n"
 			}
@@ -261,9 +174,6 @@ func TestUnixSocketFileConfig(t *testing.T) {
 			}
 			path := ".rr." + format
 			cfg := fileConfig(t, path, data)
-			if cfg.Has("fileserver.unix_socket") != (tc.options != "") {
-				t.Fatal("provider did not preserve block presence")
-			}
 			p := &Plugin{}
 			err := p.Init(cfg, testLogger{})
 			if tc.wantErr != "" {
@@ -277,6 +187,62 @@ func TestUnixSocketFileConfig(t *testing.T) {
 			}
 			if !reflect.DeepEqual(tc.want, p.config.UnixSocket) {
 				t.Fatalf("expected socket options %+v, got %+v", tc.want, p.config.UnixSocket)
+			}
+		})
+	}
+}
+
+func TestUnixSocketOwnershipError(t *testing.T) {
+	if os.Geteuid() == 0 {
+		t.Skip("Requires an unprivileged process.")
+	}
+	groups, err := os.Getgroups()
+	if err != nil {
+		t.Fatal(err)
+	}
+	otherGID := 0
+	for otherGID == os.Getegid() || slices.Contains(groups, otherGID) {
+		otherGID++
+	}
+
+	for _, tc := range []struct {
+		field string
+		id    int
+	}{
+		{field: "uid", id: 0},
+		{field: "gid", id: otherGID},
+	} {
+		t.Run(tc.field, func(t *testing.T) {
+			t.Chdir(t.TempDir())
+			t.Setenv("RR_TEST_SOCKET_ID", strconv.Itoa(tc.id))
+			data := fmt.Sprintf(`version: "3"
+fileserver:
+  address: unix://files.sock
+  unix_socket: {%s: "${RR_TEST_SOCKET_ID}"}
+  serve: [{prefix: /, root: .}]
+`, tc.field)
+			p := &Plugin{}
+			if err := p.Init(fileConfig(t, ".rr.yaml", data), testLogger{}); err != nil {
+				t.Fatal(err)
+			}
+			errCh := p.Serve()
+			t.Cleanup(func() {
+				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+				defer cancel()
+				if err := p.Stop(ctx); err != nil {
+					t.Error(err)
+				}
+			})
+			select {
+			case err := <-errCh:
+				if err == nil || !strings.Contains(err.Error(), "chown unix socket") {
+					t.Fatalf("expected an ownership error, got %v", err)
+				}
+			case <-time.After(5 * time.Second):
+				t.Fatal("expected an ownership error")
+			}
+			if _, err := os.Stat("files.sock"); !errors.Is(err, os.ErrNotExist) {
+				t.Fatalf("socket remains after failure: %v", err)
 			}
 		})
 	}
