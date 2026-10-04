@@ -28,6 +28,8 @@ github.com/mattn/go-runewidth v0.0.30 h1:+KUuiDA4fF0R1p5FeueHefjDm+GIM+kWfFnDjyb
 github.com/mattn/go-runewidth v0.0.30/go.mod h1:3qAiGCV4Koz/yuveO58qUefmUTRm8r0IGEXZ9jeHp/8=
 github.com/molecule-man/go-brrr v1.1.1 h1:KYwusQhjtV3smALnhmafZf4OBrh7vP4p8O47DyUmmuY=
 github.com/molecule-man/go-brrr v1.1.1/go.mod h1:7ybW6/7gA3oKY45jOfVNjSJDtrr6ea4tzbsTkjmQDC4=
+github.com/molecule-man/go-brrr v1.2.0 h1:dOJU45BC3Gc2WXoxAW0rgCAgVuu2gruAOGncfieA0Jw=
+github.com/molecule-man/go-brrr v1.2.0/go.mod h1:7ybW6/7gA3oKY45jOfVNjSJDtrr6ea4tzbsTkjmQDC4=
 github.com/pelletier/go-toml/v2 v2.4.3 h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=
 github.com/pelletier/go-toml/v2 v2.4.3/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/roadrunner-server/config/v6 v6.0.0-beta.4 h1:C7cNPb441g7Uwo4nN0Ug7RZrwiFfx+UU7brFxVLBU50=
