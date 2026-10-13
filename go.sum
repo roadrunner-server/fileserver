@@ -30,8 +30,8 @@ github.com/molecule-man/go-brrr v1.2.0 h1:dOJU45BC3Gc2WXoxAW0rgCAgVuu2gruAOGncfi
 github.com/molecule-man/go-brrr v1.2.0/go.mod h1:7ybW6/7gA3oKY45jOfVNjSJDtrr6ea4tzbsTkjmQDC4=
 github.com/pelletier/go-toml/v2 v2.4.3 h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=
 github.com/pelletier/go-toml/v2 v2.4.3/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
-github.com/roadrunner-server/config/v6 v6.0.0-beta.4 h1:C7cNPb441g7Uwo4nN0Ug7RZrwiFfx+UU7brFxVLBU50=
-github.com/roadrunner-server/config/v6 v6.0.0-beta.4/go.mod h1:MyM08rnnUBqmozeJ1SqFO0l2iu5nQTPKod4OLajarow=
+github.com/roadrunner-server/config/v6 v6.0.0 h1:FVzmzbv/+J4R3qKdCPl05I+Z+rWjP+Xtyks1Xo2l264=
+github.com/roadrunner-server/config/v6 v6.0.0/go.mod h1:F/IKcGSjsWfmMxqju/VACg5rqhJK7nWsJ4QG5pMZEhw=
 github.com/roadrunner-server/errors v1.6.0 h1:0GJfuvv/gYnUckPyNHwDMsu+mGJKnI2yGav6tsSJABQ=
 github.com/roadrunner-server/errors v1.6.0/go.mod h1:1CrgdvGsD/Av1URt0xu1lbJ2J/CAngU+X0+JoK1O7l8=
 github.com/roadrunner-server/tcplisten v1.6.1 h1:P7EYsgwdMZO47huUgn1xAIFhYgEs9s72MoLZZWbxNiM=
