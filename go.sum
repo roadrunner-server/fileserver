@@ -6,8 +6,8 @@ github.com/fsnotify/fsnotify v1.10.1 h1:b0/UzAf9yR5rhf3RPm9gf3ehBPpf0oZKIjtpKrx5
 github.com/fsnotify/fsnotify v1.10.1/go.mod h1:TLheqan6HD6GBK6PrDWyDPBaEV8LspOxvPSjC+bVfgo=
 github.com/go-viper/mapstructure/v2 v2.5.0 h1:vM5IJoUAy3d7zRSVtIwQgBj7BiWtMPfmPEgAXnvj1Ro=
 github.com/go-viper/mapstructure/v2 v2.5.0/go.mod h1:oJDH3BJKyqBA2TXFhDsKDGDTlndYOZ6rGS0BRZIxGhM=
-github.com/gofiber/fiber/v2 v2.52.15 h1:Cov1uKeVPyu9q0jSrN60W+A8XNX+/WK8J7cy5osHLIk=
-github.com/gofiber/fiber/v2 v2.52.15/go.mod h1:YEcBbO/FB+5M1IZNBP9FO3J9281zgPAreiI1oqg8nDw=
+github.com/gofiber/fiber/v2 v2.52.16 h1:lBemN7sjeTPwEdK/9AIAQ3YpYpzEZefiWI/vQT/6dFU=
+github.com/gofiber/fiber/v2 v2.52.16/go.mod h1:dFf1PKExrrSfg/hvoP2yXL35W3bGlzZf71KX+IYzkpg=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
 github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
@@ -54,8 +54,6 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
-github.com/valyala/fasthttp v1.75.0 h1:W3xrvNJHG60j2ZCjxpP8kkB+oPG8kh9/g1n4+3xUwNA=
-github.com/valyala/fasthttp v1.75.0/go.mod h1:JiVkPRZU124PuPsreV/s9dZRgG2lRK7wNEikdQ0Rk4s=
 github.com/valyala/fasthttp v1.76.0 h1:QitrT4foDQuqvUnr/hzmQUDbYzV12Zz4vkLOlipU4Cw=
 github.com/valyala/fasthttp v1.76.0/go.mod h1:m8oTPC8riDDky07invpl+Gz3RixnAN5BbwyUuVB5H2o=
 go.yaml.in/yaml/v3 v3.0.5 h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw=
