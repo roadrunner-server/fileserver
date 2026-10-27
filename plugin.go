@@ -6,8 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/etag"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/etag"
+	"github.com/gofiber/fiber/v3/middleware/static"
 	"github.com/roadrunner-server/errors"
 	"github.com/roadrunner-server/tcplisten"
 )
@@ -59,13 +60,13 @@ func (p *Plugin) Serve() chan error {
 
 	p.Lock()
 	p.app = fiber.New(fiber.Config{
-		ReadBufferSize:        1 * 1024 * 1024,
-		WriteBufferSize:       1 * 1024 * 1024,
-		BodyLimit:             10 * 1024 * 1024,
-		ReadTimeout:           time.Second * 10,
-		WriteTimeout:          time.Second * 10,
-		DisableStartupMessage: true,
-		StreamRequestBody:     p.config.StreamRequestBody,
+		ReadBufferSize:    1 * 1024 * 1024,
+		WriteBufferSize:   1 * 1024 * 1024,
+		BodyLimit:         10 * 1024 * 1024,
+		ReadTimeout:       time.Second * 10,
+		WriteTimeout:      time.Second * 10,
+		UnescapePath:      true,
+		StreamRequestBody: p.config.StreamRequestBody,
 	})
 
 	if p.config.CalculateEtag {
@@ -75,13 +76,13 @@ func (p *Plugin) Serve() chan error {
 	}
 
 	for _, cfg := range p.config.Configuration {
-		p.app.Static(cfg.Prefix, cfg.Root, fiber.Static{
+		p.app.Use(cfg.Prefix, static.New(cfg.Root, static.Config{
 			Compress:      cfg.Compress,
 			ByteRange:     cfg.BytesRange,
 			Browse:        false,
 			CacheDuration: time.Second * time.Duration(cfg.CacheDuration),
 			MaxAge:        cfg.MaxAge,
-		})
+		}))
 	}
 
 	ln, err := tcplisten.CreateListenerWithOptions(p.config.Address, p.config.UnixSocket)
@@ -94,7 +95,7 @@ func (p *Plugin) Serve() chan error {
 	go func() {
 		p.Unlock()
 		p.log.Info("file server started", "address", p.config.Address)
-		if err := p.app.Listener(ln); err != nil {
+		if err := p.app.Listener(ln, fiber.ListenConfig{DisableStartupMessage: true}); err != nil {
 			errCh <- err
 		}
 	}()
